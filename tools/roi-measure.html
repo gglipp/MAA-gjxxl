@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>红点1 ROI 测量工具</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+            font-family: monospace;
+        }
+        h2 { color: #0f0; }
+        .info {
+            background: #16213e;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        canvas {
+            border: 2px solid #0f0;
+            cursor: crosshair;
+            max-width: 100%;
+        }
+        .controls { margin: 10px 0; }
+        button {
+            padding: 8px 16px;
+            background: #0f0;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover { background: #0c0; }
+        #result {
+            background: #0d4d0d;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+    <h2>红点1 ROI 测量工具</h2>
+    <div class="info">
+        <p>截图尺寸: <span id="imgSize">-</span></p>
+        <p>缩放比例: <span id="scale">-</span></p>
+        <p>操作: 在图片上<b>点击并拖动</b>框选红点1区域，松开鼠标后自动计算 ROI</p>
+    </div>
+    <div class="controls">
+        <button onclick="reset()">重新框选</button>
+        <button onclick="useFullImage()">使用全图(不推荐)</button>
+    </div>
+    <canvas id="canvas"></canvas>
+    <div id="result"></div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const resultDiv = document.getElementById('result');
+
+        // 截图原始尺寸（从文件读取后会更新）
+        let imgWidth = 0, imgHeight = 0;
+        let displayScale = 1;
+
+        // 加载图片
+        const img = new Image();
+        img.onload = function() {
+            imgWidth = img.naturalWidth;
+            imgHeight = img.naturalHeight;
+            document.getElementById('imgSize').textContent = imgWidth + 'x' + imgHeight;
+
+            // 计算显示缩放，最大宽度 1200px
+            const maxWidth = 1200;
+            if (imgWidth > maxWidth) {
+                displayScale = maxWidth / imgWidth;
+                canvas.width = maxWidth;
+                canvas.height = imgHeight * displayScale;
+            } else {
+                displayScale = 1;
+                canvas.width = imgWidth;
+                canvas.height = imgHeight;
+            }
+            document.getElementById('scale').textContent = displayScale.toFixed(4);
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+        img.src = 'screenshot.png';
+
+        // 框选状态
+        let isDrawing = false;
+        let startX, startY, endX, endY;
+
+        canvas.addEventListener('mousedown', function(e) {
+            const rect = canvas.getBoundingClientRect();
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
+            isDrawing = true;
+        });
+
+        canvas.addEventListener('mousemove', function(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            endX = e.clientX - rect.left;
+            endY = e.clientY - rect.top;
+
+            // 重绘
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#0f0';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(
+                Math.min(startX, endX),
+                Math.min(startY, endY),
+                Math.abs(endX - startX),
+                Math.abs(endY - startY)
+            );
+        });
+
+        canvas.addEventListener('mouseup', function(e) {
+            isDrawing = false;
+            const rect = canvas.getBoundingClientRect();
+            endX = e.clientX - rect.left;
+            endY = e.clientY - rect.top;
+
+            calculateROI();
+        });
+
+        function calculateROI() {
+            // 转换回原始截图坐标
+            const x1 = Math.min(startX, endX) / displayScale;
+            const y1 = Math.min(startY, endY) / displayScale;
+            const x2 = Math.max(startX, endX) / displayScale;
+            const y2 = Math.max(startY, endY) / displayScale;
+
+            const w = x2 - x1;
+            const h = y2 - y1;
+
+            // 缩放到 1280x720
+            const scaleX = 1280 / imgWidth;
+            const scaleY = 720 / imgHeight;
+
+            const roiX = Math.round(x1 * scaleX);
+            const roiY = Math.round(y1 * scaleY);
+            const roiW = Math.round(w * scaleX);
+            const roiH = Math.round(h * scaleY);
+
+            const result = {
+                '原始截图坐标': { x: Math.round(x1), y: Math.round(y1), w: Math.round(w), h: Math.round(h) },
+                '1280x720 ROI': [roiX, roiY, roiW, roiH],
+                'JSON 格式': `"roi": [${roiX}, ${roiY}, ${roiW}, ${roiH}]`
+            };
+
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+        }
+
+        function reset() {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resultDiv.textContent = '';
+        }
+
+        function useFullImage() {
+            startX = 0; startY = 0;
+            endX = canvas.width; endY = canvas.height;
+            calculateROI();
+        }
+    </script>
+</body>
+</html>

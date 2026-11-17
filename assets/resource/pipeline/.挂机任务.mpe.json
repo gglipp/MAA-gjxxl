@@ -1,0 +1,44 @@
+{
+    "file_config": {
+        "prefix": "",
+        "coordinateMode": "absolute-v1",
+        "lastSyncTime": 1794830941584,
+        "isModifiedExternally": false,
+        "isDeleted": false,
+        "filePath": "C:\\Users\\gglip\\Desktop\\挂机修仙录\\MAA-gjxxl\\assets\\resource\\pipeline\\挂机任务.json",
+        "separatedConfigPath": "C:\\Users\\gglip\\Desktop\\挂机修仙录\\MAA-gjxxl\\assets\\resource\\pipeline\\.挂机任务.mpe.json",
+        "savedViewport": {
+            "x": 1209,
+            "y": 385,
+            "zoom": 1.5
+        },
+        "filename": "挂机任务",
+        "version": "v2.1.3"
+    },
+    "node_configs": {
+        "进入脚本": {
+            "position": {
+                "x": -263,
+                "y": 24
+            }
+        },
+        "人间材料": {
+            "position": {
+                "x": 127,
+                "y": 0
+            }
+        },
+        "前往": {
+            "position": {
+                "x": 1054,
+                "y": 22
+            }
+        },
+        "领取": {
+            "position": {
+                "x": 472,
+                "y": -6
+            }
+        }
+    }
+}

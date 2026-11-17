@@ -4,9 +4,9 @@
     // 文档：https://maafw.xyz/docs/3.3-ProjectInterfaceV2
     // 示例：https://github.com/MaaXYZ/MaaFramework/blob/main/sample/interface.json
     "interface_version": 2,
-    "name": "MaaXXX",
-    "description": "这是一个使用 MaaFramework 创建的新项目。",
-    "contact": "QQ群: 123456789",
+    "name": "Maa-gjxxl",
+    "description": "挂机修仙录自动化任务脚本。",
+    "contact": "",
     "license": "MIT",
     "welcome": "首次使用！欢迎使用 MAA!",
     // 填写项目地址和版本号可实现自动更新功能
@@ -18,16 +18,11 @@
     // "mirrorchyan_multiplatform": true,
     "controller": [
         {
-            "name": "安卓端",
-            "type": "Adb",
-            "display_short_side": 720 // 默认缩放分辨率的短边长度
-        },
-        {
             "name": "桌面端",
             "type": "Win32",
             "win32": {
                 "class_regex": ".*",
-                "window_regex": "Visual Studio",
+                "window_regex": "Legend|挂机放置修仙录",
                 // 截图及控制方式，请根据项目实际情况修改
                 // 文档: https://maafw.xyz/docs/2.4-ControlMethods
                 "screencap": "PrintWindow", // 截图方式
@@ -42,13 +37,6 @@
             "path": [
                 "./resource"
             ]
-        },
-        {
-            "name": "B 服",
-            "path": [
-                "./resource"
-                // "./resource_bilibili"
-            ]
         }
     ],
     // 可选的 agent 示例
@@ -60,50 +48,81 @@
     // },
     "task": [
         {
-            "name": "普通任务",
-            "entry": "MyTask1"
+            "name": "刷卷轴材料",
+            "entry": "检测红点"
         },
         {
-            "name": "选项任务",
-            "entry": "MyTask2",
+            "name": "自动卖装备",
+            "entry": "自动卖装备",
             "option": [
-                "任务选项1"
+                "卖装备位置"
             ]
-        },
-        {
-            "name": "参数任务",
-            "entry": "MyTask3",
-            "option": [
-                "任务选项1"
-            ],
-            "pipeline_override": {}
-        },
-        {
-            "name": "自定义识别与动作示例",
-            "entry": "FindSmallestNumber"
         }
     ],
     "option": {
-        "任务选项1": {
+        "卖装备位置": {
             "type": "select",
             "cases": [
                 {
-                    "name": "文本1",
+                    "name": "1",
+                    "label": "第一行",
                     "pipeline_override": {
-                        "OcrTask": {
-                            "text": "文本1"
+                        "自动卖装备": {
+                            "next": [
+                                "点击第一行"
+                            ]
                         }
                     }
                 },
                 {
-                    "name": "文本2",
+                    "name": "2",
+                    "label": "第二行",
                     "pipeline_override": {
-                        "OcrTask": {
-                            "text": "文本2"
+                        "自动卖装备": {
+                            "next": [
+                                "点击第二行"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "3",
+                    "label": "第三行",
+                    "pipeline_override": {
+                        "自动卖装备": {
+                            "next": [
+                                "点击第三行"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "4",
+                    "label": "第四行",
+                    "pipeline_override": {
+                        "自动卖装备": {
+                            "next": [
+                                "点击第四行"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "5",
+                    "label": "第五行",
+                    "pipeline_override": {
+                        "自动卖装备": {
+                            "next": [
+                                "点击第五行"
+                            ]
                         }
                     }
                 }
-            ]
+            ],
+            "label": "自动出售位置",
+            "description": "1-5对应背包1-5行第1列的格子，格子中装备会自动卖出，需要先进行装备排序，不需要的装备在最后，自动卖出所选位置以及后方所有装备"
         }
-    }
+    },
+    "label": "挂机修仙录-自动化工具",
+    "title": "挂机修仙录-自动化工具"
 }
